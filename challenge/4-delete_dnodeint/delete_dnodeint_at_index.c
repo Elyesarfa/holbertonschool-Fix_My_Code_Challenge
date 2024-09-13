@@ -11,52 +11,44 @@
  */
 int delete_dnodeint_at_index(dlistint_t **head, unsigned int index)
 {
-    dlistint_t *temp = *head;
+    dlistint_t *current;
     unsigned int i;
 
-    if (*head == NULL)  // Check if the list is empty
-    {
+    if (head == NULL || *head == NULL)
         return (-1);
+
+    current = *head;
+
+    // Traverse to the node to delete
+    for (i = 0; current != NULL && i < index; i++)
+    {
+        current = current->next;
     }
 
-    // Traverse to the node at index
-    for (i = 0; temp != NULL && i < index; i++)
-    {
-        temp = temp->next;
-    }
-
-    // Check if the node to be deleted is out of bounds
-    if (temp == NULL)
-    {
+    // If index is out of bounds
+    if (current == NULL)
         return (-1);
-    }
 
-    // Node to be deleted is the head node
-    if (temp == *head)
+    // Handle deletion of the head node
+    if (current == *head)
     {
-        *head = temp->next;
+        *head = current->next;
         if (*head != NULL)
-        {
             (*head)->prev = NULL;
-        }
     }
     else
     {
-        // Update the prev pointer of the next node
-        if (temp->next != NULL)
-        {
-            temp->next->prev = temp->prev;
-        }
+        // Update the previous node's next pointer
+        if (current->prev != NULL)
+            current->prev->next = current->next;
 
-        // Update the next pointer of the previous node
-        if (temp->prev != NULL)
-        {
-            temp->prev->next = temp->next;
-        }
+        // Update the next node's previous pointer
+        if (current->next != NULL)
+            current->next->prev = current->prev;
     }
 
-    // Free the memory of the node to be deleted
-    free(temp);
+    // Free the node
+    free(current);
 
     return (1);
 }
